@@ -5,11 +5,17 @@ export default {
     state: {productList: [
         { name: 'dva'},
         { name: 'antd'}
-    ]
+    ],user:{
+        isLogin: 'false'
+    }
+
     },
     reducers: {
         add(state,action) {
-            return {...state, ...state.productList.push(action.payload)}
+            return {...state, ...state.productList.push(action.payload)};
+        },
+        setlogin(state,action) {
+            return {...state,user:action.payload};
         }
     },
 
@@ -26,16 +32,22 @@ export default {
             const res = yield call(api.login,payload);
             const access_tocken = res.access;
             const refresh_tocken = res.refresh;
+            if (access_tocken){
             // console.log(access_tocken);
-            let storage=window.localStorage;
-            storage['access_tocken'] = '';
-            storage['refresh_tocken'] = '';
-            storage.setItem('access_tocken',access_tocken)
-            storage.setItem('refresh_tocken',refresh_tocken)
-
-            const resusers = yield call(api.getusers,access_tocken)
-            const users = resusers.results
-            console.log(users)
+                let storage=window.localStorage;
+                storage['access_tocken'] = '';
+                storage['refresh_tocken'] = '';
+                storage.setItem('access_tocken',access_tocken)
+                storage.setItem('refresh_tocken',refresh_tocken)
+                yield put ({
+                    type: 'setlogin',
+                    payload: {isLogin: 'true'}
+                })
+            }
+            
+            // const resusers = yield call(api.getusers,access_tocken)
+            // const users = resusers.results
+            // console.log(users)
         },
 
 
@@ -70,5 +82,6 @@ export default {
             })
 
         }
-    }
+    },
 }
+

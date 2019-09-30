@@ -24,6 +24,7 @@ class IndexPageComponents extends React.Component {
                 name: '苹果'
             }
         })
+        console.log(this.props)
     }
 
     handlewithRouter = () => {
@@ -72,21 +73,33 @@ class IndexPageComponents extends React.Component {
         document.title = '登录'
       }
     
-      handleSubmit = e => {
-        e.preventDefault();
-        this.props.form.validateFields((err, values) => {
-          if (!err) {
-            this.props.dispatch({
-                type: 'index/login',
-                payload: values
+    handleSubmit = e => {
+    e.preventDefault();
+    this.props.form.validateFields((err, values) => {
+        if (!err) {
+        this.props.dispatch({
+            type: 'index/login',
+            payload: values
+        })
+        }
+    });
+    console.log(this.props)
+    this.handleIsLogin();
+    }
     
-            })
-          }
-        });
-      };
+    handleIsLogin = () => {
+        const { user } = this.props.productList;
+        console.log(this.props);
+        if (user.isLogin == 'true'){
+            this.props.history.push('/');
+        } else {
+            console.log('未登录');
+        }
+    }
 
     render() {
-        const { productList } = this.props.productList
+        const { productList, user } = this.props.productList
+        // console.log(user)
         const { getFieldDecorator, getFieldsError, getFieldError, isFieldTouched } = this.props.form;
 
         // Only show error after a field is touched.
@@ -95,14 +108,15 @@ class IndexPageComponents extends React.Component {
         // console.log(this.props.dispatch)
         return (
             <div>
-                {/* Product:{this.props.title}
-                <ul>
+                用户登录情况：{user.isLogin}
+                {/* Product:{this.props.title} */}
+                {/* <ul>
                     {productList.map((ele, index) => {
                         return <li key={index}> {ele.name} </li>
                     }
                     )}
-                </ul>
-                <button onClick={this.handleAdd}>新增商品</button>
+                </ul> */}
+                {/* <button onClick={this.handleAdd}>新增商品</button>
                 <button onClick={this.handAddAsync.bind(this)} >异步增加商品</button><br />
                 <button onClick={this.handAddHttp.bind(this)} >HTTP增加商品</button><br />
 
@@ -138,6 +152,7 @@ class IndexPageComponents extends React.Component {
                     </Button>
                     </Form.Item>
                 </Form>
+                <button onClick={this.handleIsLogin}>判断是否登录并跳转首页</button>
             </div>
         )
     };
@@ -150,6 +165,7 @@ const WrappedHorizontalLoginForm = Form.create({ name: 'horizontal_login' })(Ind
 
 class IndexPageComponent extends React.Component{
     render() {
+        // console.log(this.props)
         return(
             <WrappedHorizontalLoginForm {...this.props} />
         )
